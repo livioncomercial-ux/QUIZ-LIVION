@@ -1,1 +1,657 @@
-# QUIZ-LIVION
+# QUIZ-<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Perfil Comportamental · LIVION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #1a1a1e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #222226;
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            border: 1px solid #2e2e34;
+        }
+
+        /* progress */
+        .progress-wrap {
+            background: #2e2e34;
+            border-radius: 40px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2962ff, #5a8cff, #82b1ff);
+            border-radius: 40px;
+            transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .step-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #888;
+            letter-spacing: 0.3px;
+            margin-top: 6px;
+        }
+
+        .step-counter span {
+            color: #b0b0b8;
+        }
+
+        /* steps */
+        .step {
+            display: none;
+            animation: fadeStep 0.35s ease;
+        }
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeStep {
+            0% { opacity: 0.2; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            color: #e8e8f0;
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-sub {
+            color: #9a9aa5;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .option-btn {
+            background: #2a2a30;
+            border: 1px solid #36363e;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            text-align: left;
+            color: #dddde6;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .option-btn:hover {
+            background: #32323a;
+            border-color: #2962ff;
+            transform: scale(1.01);
+        }
+
+        .option-btn.selected {
+            background: #1a2a4a;
+            border-color: #2979ff;
+            box-shadow: 0 0 0 1px #2979ff, 0 4px 12px rgba(41, 121, 255, 0.2);
+            color: #fff;
+        }
+
+        .option-btn span {
+            display: block;
+            font-size: 0.75rem;
+            color: #8888a0;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* full width option for escopo */
+        .options-grid.fullwidth {
+            grid-template-columns: 1fr;
+        }
+
+        /* input fields */
+        .input-group {
+            margin-bottom: 1.4rem;
+        }
+        .input-group label {
+            display: block;
+            color: #b8b8c8;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        .input-field {
+            width: 100%;
+            background: #2a2a30;
+            border: 1px solid #36363e;
+            border-radius: 18px;
+            padding: 0.9rem 1.2rem;
+            color: #eee;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-field:focus {
+            border-color: #2979ff;
+            box-shadow: 0 0 0 2px rgba(41, 121, 255, 0.2);
+        }
+        .input-field::placeholder {
+            color: #666;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .flex-row .input-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .btn-next, .btn-finish {
+            background: #2979ff;
+            border: none;
+            border-radius: 60px;
+            padding: 0.9rem 2rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            width: 100%;
+            margin-top: 1.2rem;
+            letter-spacing: 0.2px;
+            box-shadow: 0 6px 14px rgba(41, 121, 255, 0.25);
+        }
+        .btn-next:hover, .btn-finish:hover {
+            background: #1c6ae4;
+            transform: scale(1.02);
+        }
+        .btn-next:active, .btn-finish:active {
+            transform: scale(0.97);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid #3a3a44;
+            color: #aaa;
+            border-radius: 60px;
+            padding: 0.7rem 1.4rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            width: auto;
+        }
+        .btn-back:hover {
+            background: #2a2a32;
+            color: #ddd;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-tag {
+            display: inline-block;
+            background: #0f2a44;
+            color: #82b1ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #2962ff55;
+            margin-top: 5px;
+        }
+
+        /* responsivo */
+        @media (max-width: 500px) {
+            .card {
+                padding: 1.5rem 1.2rem;
+                border-radius: 2rem;
+            }
+            .step-title {
+                font-size: 1.35rem;
+            }
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 0.7rem;
+            }
+            .options-grid.fullwidth {
+                grid-template-columns: 1fr;
+            }
+            .flex-row {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+            .flex-row .input-group {
+                min-width: unset;
+            }
+            .btn-next, .btn-finish {
+                padding: 0.8rem 1.2rem;
+                font-size: 1rem;
+            }
+            .btn-back {
+                width: 100%;
+                text-align: center;
+            }
+            .btn-row {
+                flex-direction: column;
+            }
+        }
+
+        /* summary profile */
+        .profile-badge {
+            background: #1a2a3a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid #2979ff44;
+            margin-bottom: 1rem;
+        }
+        .profile-badge strong {
+            color: #90caf9;
+        }
+        .review-box {
+            background: #1e1e24;
+            border-radius: 20px;
+            padding: 1rem 1.4rem;
+            margin: 1rem 0;
+            border: 1px solid #2e2e38;
+            color: #c8c8d6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .review-box span {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <div class="card">
+        <!-- progress -->
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="step-counter" id="stepCounter">Passo <span id="stepNum">1</span> de 6</div>
+
+        <!-- step 1 – Nicho -->
+        <div class="step active" data-step="1">
+            <div class="step-title">🎯 Qual é o seu nicho?</div>
+            <div class="step-sub">Selecione a opção que melhor descreve seu projeto</div>
+            <div class="options-grid" data-group="nicho">
+                <button class="option-btn" data-value="Evento Corporativo">Evento Corporativo <span>Palestras, conferências, festas empresariais</span></button>
+                <button class="option-btn" data-value="Show/Clipe">Show/Clipe <span>Artistas, bandas, videoclipes</span></button>
+                <button class="option-btn" data-value="Negócio Local">Negócio Local <span>Restaurante, loja, academia, eventos locais</span></button>
+                <button class="option-btn" data-value="Live/Ecommerce">Live/Ecommerce <span>Transmissões ao vivo, vendas online</span></button>
+            </div>
+        </div>
+
+        <!-- step 2 – Perfil -->
+        <div class="step" data-step="2">
+            <div class="step-title">🧠 O que é inegociável para você?</div>
+            <div class="step-sub">Sua prioridade revela seu perfil comportamental</div>
+            <div class="options-grid" data-group="perfil">
+                <button class="option-btn" data-value="Resultado e Prazo">🚀 Resultado e Prazo <span>Foco total em entregar no prazo com excelência</span></button>
+                <button class="option-btn" data-value="Inovação e Criatividade">🦅 Inovação e Criatividade <span>Ideias originais, visão artística</span></button>
+                <button class="option-btn" data-value="Conexão e Relacionamento">🐱 Conexão e Relacionamento <span>Pessoas, empatia, vínculo com o público</span></button>
+                <button class="option-btn" data-value="Organização e Detalhes">🐺 Organização e Detalhes <span>Estrutura, planejamento, precisão</span></button>
+            </div>
+        </div>
+
+        <!-- step 3 – Escopo -->
+        <div class="step" data-step="3">
+            <div class="step-title">📦 Qual escopo você busca?</div>
+            <div class="step-sub">Escolha o nível de entrega ideal</div>
+            <div class="options-grid fullwidth" data-group="escopo">
+                <button class="option-btn" data-value="Essencial">Essencial <span>Gravação básica + edição simples</span></button>
+                <button class="option-btn" data-value="Premium">Premium <span>Gravação profissional + edição + correção de cor</span></button>
+                <button class="option-btn" data-value="Master">Master <span>Pacote completo: making of, drone, pós-produção avançada</span></button>
+            </div>
+        </div>
+
+        <!-- step 4 – Logística -->
+        <div class="step" data-step="4">
+            <div class="step-title">📍 Cidade e Data</div>
+            <div class="step-sub">Onde e quando será o projeto?</div>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="cidade">Cidade *</label>
+                    <input type="text" id="cidade" class="input-field" placeholder="Ex: São Paulo, SP" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="data">Data prevista *</label>
+                    <input type="date" id="data" class="input-field">
+                </div>
+            </div>
+        </div>
+
+        <!-- step 5 – Dados pessoais -->
+        <div class="step" data-step="5">
+            <div class="step-title">📋 Seus dados</div>
+            <div class="step-sub">Para enviarmos o diagnóstico completo</div>
+            <div class="input-group">
+                <label for="nome">Nome *</label>
+                <input type="text" id="nome" class="input-field" placeholder="Seu nome" autocomplete="name">
+            </div>
+            <div class="input-group">
+                <label for="whatsapp">WhatsApp *</label>
+                <input type="tel" id="whatsapp" class="input-field" placeholder="(11) 99999-9999" autocomplete="tel">
+            </div>
+        </div>
+
+        <!-- step 6 – Revisão e finalização -->
+        <div class="step" data-step="6">
+            <div class="step-title">✅ Revisar respostas</div>
+            <div class="step-sub">Confira tudo antes de finalizar</div>
+            <div id="profileBadgeContainer"></div>
+            <div class="review-box" id="reviewBox"></div>
+            <button class="btn-finish" id="btnFinalizar">🚀 Finalizar e enviar via WhatsApp</button>
+            <button class="btn-back" id="btnBackReview" style="margin-top:0.8rem;">← Voltar e editar</button>
+        </div>
+
+        <!-- navegação entre etapas (exceto step6) -->
+        <div id="navButtons" style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin-top: 1.2rem;">
+            <button class="btn-back" id="btnPrevStep" style="display:none;">← Voltar</button>
+            <button class="btn-next" id="btnNextStep">Continuar →</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- state ----------
+        const state = {
+            nicho: null,
+            perfil: null,        // raw text: "Resultado e Prazo" etc
+            escopo: null,
+            cidade: '',
+            data: '',
+            nome: '',
+            whatsapp: '',
+            currentStep: 1,
+            totalSteps: 6
+        };
+
+        // perfil mapping
+        const PROFILE_MAP = {
+            'Resultado e Prazo': 'TUBARÃO',
+            'Inovação e Criatividade': 'ÁGUIA',
+            'Conexão e Relacionamento': 'GATO',
+            'Organização e Detalhes': 'LOBO'
+        };
+
+        // DOM refs
+        const steps = document.querySelectorAll('.step');
+        const progressBar = document.getElementById('progressBar');
+        const stepNum = document.getElementById('stepNum');
+        const stepCounter = document.getElementById('stepCounter');
+        const btnNext = document.getElementById('btnNextStep');
+        const btnPrev = document.getElementById('btnPrevStep');
+        const btnBackReview = document.getElementById('btnBackReview');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+        const navButtons = document.getElementById('navButtons');
+
+        // inputs
+        const cidadeInput = document.getElementById('cidade');
+        const dataInput = document.getElementById('data');
+        const nomeInput = document.getElementById('nome');
+        const whatsappInput = document.getElementById('whatsapp');
+
+        // review
+        const reviewBox = document.getElementById('reviewBox');
+        const profileBadgeContainer = document.getElementById('profileBadgeContainer');
+
+        // ---------- helpers ----------
+        function showStep(step) {
+            steps.forEach(s => s.classList.remove('active'));
+            const target = document.querySelector(`.step[data-step="${step}"]`);
+            if(target) target.classList.add('active');
+
+            // progress
+            const pct = ((step - 1) / (state.totalSteps - 1)) * 100;
+            progressBar.style.width = `${Math.min(pct, 100)}%`;
+            stepNum.textContent = step;
+
+            // nav visibility
+            if (step === state.totalSteps) {
+                navButtons.style.display = 'none';
+                // btnBackReview is inside step6
+            } else {
+                navButtons.style.display = 'flex';
+                btnPrev.style.display = step > 1 ? 'inline-block' : 'none';
+                // change button label
+                if (step === state.totalSteps - 1) {
+                    btnNext.textContent = '📋 Revisar →';
+                } else {
+                    btnNext.textContent = 'Continuar →';
+                }
+            }
+
+            // sync inputs from state (step 4,5)
+            if (step === 4) {
+                cidadeInput.value = state.cidade || '';
+                dataInput.value = state.data || '';
+            }
+            if (step === 5) {
+                nomeInput.value = state.nome || '';
+                whatsappInput.value = state.whatsapp || '';
+            }
+
+            // render review on step 6
+            if (step === 6) {
+                renderReview();
+            }
+
+            // highlight selected options
+            document.querySelectorAll('.options-grid').forEach(grid => {
+                const group = grid.dataset.group;
+                let currentVal = null;
+                if (group === 'nicho') currentVal = state.nicho;
+                else if (group === 'perfil') currentVal = state.perfil;
+                else if (group === 'escopo') currentVal = state.escopo;
+
+                grid.querySelectorAll('.option-btn').forEach(btn => {
+                    const val = btn.dataset.value;
+                    btn.classList.toggle('selected', val === currentVal);
+                });
+            });
+        }
+
+        function getProfile(raw) {
+            return PROFILE_MAP[raw] || '—';
+        }
+
+        function renderReview() {
+            const p = state.perfil ? getProfile(state.perfil) : '—';
+            profileBadgeContainer.innerHTML = state.perfil 
+                ? `<div class="profile-badge"><strong>🧬 Perfil: ${p}</strong> (${state.perfil})</div>`
+                : '';
+
+            reviewBox.innerHTML = `
+                <div>🎯 <strong>Nicho:</strong> ${state.nicho || '—'}</div>
+                <div>🧠 <strong>Prioridade:</strong> ${state.perfil || '—'}</div>
+                <div>📦 <strong>Escopo:</strong> ${state.escopo || '—'}</div>
+                <div>📍 <strong>Cidade:</strong> ${state.cidade || '—'}</div>
+                <div>📅 <strong>Data:</strong> ${state.data || '—'}</div>
+                <div>👤 <strong>Nome:</strong> ${state.nome || '—'}</div>
+                <div>📱 <strong>WhatsApp:</strong> ${state.whatsapp || '—'}</div>
+            `;
+        }
+
+        function validateStep(step) {
+            if (step === 1) return !!state.nicho;
+            if (step === 2) return !!state.perfil;
+            if (step === 3) return !!state.escopo;
+            if (step === 4) {
+                const cid = cidadeInput.value.trim();
+                const dat = dataInput.value.trim();
+                if (!cid || !dat) return false;
+                state.cidade = cid;
+                state.data = dat;
+                return true;
+            }
+            if (step === 5) {
+                const nome = nomeInput.value.trim();
+                const wpp = whatsappInput.value.trim();
+                if (!nome || !wpp) return false;
+                state.nome = nome;
+                state.whatsapp = wpp;
+                return true;
+            }
+            return true;
+        }
+
+        function goToStep(step) {
+            if (step < 1) step = 1;
+            if (step > state.totalSteps) step = state.totalSteps;
+            state.currentStep = step;
+            showStep(step);
+        }
+
+        function tryAdvance() {
+            const cur = state.currentStep;
+            if (cur === state.totalSteps) return; // review step – handled by finish
+            if (validateStep(cur)) {
+                // store cidade/data/nome/whats if step 4/5
+                if (cur === 4) {
+                    state.cidade = cidadeInput.value.trim();
+                    state.data = dataInput.value.trim();
+                }
+                if (cur === 5) {
+                    state.nome = nomeInput.value.trim();
+                    state.whatsapp = whatsappInput.value.trim();
+                }
+                goToStep(cur + 1);
+            } else {
+                // alert
+                const msgs = {
+                    1: 'Selecione uma opção de nicho.',
+                    2: 'Selecione sua prioridade.',
+                    3: 'Selecione um escopo.',
+                    4: 'Preencha cidade e data.',
+                    5: 'Preencha nome e WhatsApp.',
+                };
+                alert(msgs[cur] || 'Preencha os campos obrigatórios.');
+            }
+        }
+
+        // ---------- events ----------
+        // options
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const grid = this.closest('.options-grid');
+                if (!grid) return;
+                const group = grid.dataset.group;
+                const value = this.dataset.value;
+
+                // deselect others
+                grid.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // store
+                if (group === 'nicho') state.nicho = value;
+                else if (group === 'perfil') state.perfil = value;
+                else if (group === 'escopo') state.escopo = value;
+            });
+        });
+
+        // next
+        btnNext.addEventListener('click', tryAdvance);
+
+        // prev
+        btnPrev.addEventListener('click', function() {
+            if (state.currentStep > 1) {
+                goToStep(state.currentStep - 1);
+            }
+        });
+
+        // back from review (step6 -> step5)
+        btnBackReview.addEventListener('click', function() {
+            goToStep(5);
+        });
+
+        // finalizar
+        btnFinalizar.addEventListener('click', function() {
+            // validate all required fields
+            if (!state.nicho || !state.perfil || !state.escopo || !state.cidade || !state.data || !state.nome || !state.whatsapp) {
+                alert('Todos os campos são obrigatórios. Volte e preencha corretamente.');
+                return;
+            }
+
+            const profileName = getProfile(state.perfil);
+            const text = 
+`🎬 *QUIZ LIVION - DIAGNÓSTICO*
+✅ *Perfil: ${profileName}* (${state.perfil})
+
+📍 Nicho: ${state.nicho}
+📦 Escopo: ${state.escopo}
+🏙 Cidade: ${state.cidade}
+📅 Data: ${state.data}
+
+👤 Nome: ${state.nome}
+📱 WhatsApp: ${state.whatsapp}
+
+[GERADO VIA QUIZ COMPORTAMENTAL]`;
+
+            const encoded = encodeURIComponent(text);
+            const phone = '5511999999999'; // LIVION number placeholder – ajustar conforme necessário
+            const url = `https://wa.me/${phone}?text=${encoded}`;
+            
+            // open WhatsApp
+            window.open(url, '_blank');
+        });
+
+        // input realtime save
+        cidadeInput.addEventListener('input', () => { state.cidade = cidadeInput.value.trim(); });
+        dataInput.addEventListener('input', () => { state.data = dataInput.value.trim(); });
+        nomeInput.addEventListener('input', () => { state.nome = nomeInput.value.trim(); });
+        whatsappInput.addEventListener('input', () => { state.whatsapp = whatsappInput.value.trim(); });
+
+        // init
+        goToStep(1);
+    })();
+</script>
+</body>
+</html>
